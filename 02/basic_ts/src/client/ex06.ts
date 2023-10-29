@@ -7,7 +7,6 @@ import {
   Color,
   DirectionalLight,
   MeshStandardMaterial,
-  MathUtils,
   Clock
 } from 'three';
 
@@ -61,12 +60,11 @@ export default function example() {
 
   // 그리기
   function draw(): void {
+    const delta = clock.getDelta(); // 시간 간격
     // 각도는 Radian을 사용
     // 360는 2파이
-    // mesh.rotation.x += 0.1;
-    const time = clock.getElapsedTime();
-    mesh.position.y = time;
-    mesh.rotation.y = time * 2;
+    mesh.position.y += delta;
+    mesh.rotation.y += delta * 2;
     if (mesh.position.y > 3) {
       mesh.position.y = 0;
     }

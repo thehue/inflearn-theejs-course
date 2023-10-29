@@ -6,9 +6,7 @@ import {
   Mesh,
   Color,
   DirectionalLight,
-  MeshStandardMaterial,
-  MathUtils,
-  Clock
+  MeshStandardMaterial
 } from 'three';
 
 // ----- 주제: 애니메이션 기본
@@ -17,11 +15,9 @@ export default function example() {
   //Renderer
   const canvas = document.querySelector('#three-canvas') as Element;
   const renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true });
-  // renderer.setClearAlpha(0);
   renderer.setClearColor('blue');
   renderer.setClearAlpha(0.5);
   renderer.setSize(window.innerWidth, window.innerHeight);
-  // console.log(window.devicePixelRatio); // 2
   renderer.setPixelRatio(window.devicePixelRatio > 1 ? 2 : 1); // 해상도 높이기
 
   // Scene
@@ -57,28 +53,28 @@ export default function example() {
   const mesh = new Mesh(geometry, material);
   scene.add(mesh);
 
-  const clock = new Clock();
-
   // 그리기
+  let oldTime = Date.now();
+
   function draw(): void {
-    // 각도는 Radian을 사용
-    // 360는 2파이
-    // mesh.rotation.x += 0.1;
-    const time = clock.getElapsedTime();
-    mesh.position.y = time;
-    mesh.rotation.y = time * 2;
+    const newTime = Date.now();
+    const deltaTime = newTime - oldTime;
+
+    oldTime = newTime;
+
+    mesh.rotation.y += deltaTime * 0.005;
+    mesh.position.y += deltaTime * 0.001;
+
     if (mesh.position.y > 3) {
       mesh.position.y = 0;
     }
     renderer.render(scene, camera);
 
-    // requestAnimationFrame(draw);
-    renderer.setAnimationLoop(draw); // AR, VR 컨텐츠 만들때 setAnimationLoop를 사용해줘야한다.
+    renderer.setAnimationLoop(draw);
   }
 
   function setSize(): void {
     camera.aspect = window.innerWidth / window.innerHeight;
-    // updateProjectionMatrix: 카메라 투영에 관련된 값에 변화가 있을 경우 실행해야 함.
     camera.updateProjectionMatrix();
 
     renderer.setSize(window.innerWidth, window.innerHeight);
